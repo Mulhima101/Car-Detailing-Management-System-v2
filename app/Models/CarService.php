@@ -54,4 +54,9 @@ class CarService extends Model
         return $this->morphMany(DatabaseNotification::class, 'notifiable')
                     ->where('data->car_service_id', $this->id);
     }
+
+    public function calendarEvent()
+    {
+        return $this->hasOne(CalendarEvent::class);
+    }
 }

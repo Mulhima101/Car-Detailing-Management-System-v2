@@ -51,3 +51,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Calendar routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/calendar', [App\Http\Controllers\CalendarController::class, 'index'])->name('admin.calendar');
+    Route::get('/admin/calendar/events', [App\Http\Controllers\CalendarController::class, 'getEvents'])->name('admin.calendar.events');
+    Route::post('/admin/calendar/events', [App\Http\Controllers\CalendarController::class, 'store'])->name('admin.calendar.events.store');
+    Route::put('/admin/calendar/events/{id}', [App\Http\Controllers\CalendarController::class, 'update'])->name('admin.calendar.events.update');
+    Route::delete('/admin/calendar/events/{id}', [App\Http\Controllers\CalendarController::class, 'destroy'])->name('admin.calendar.events.destroy');
+    Route::post('/admin/calendar/sync', [App\Http\Controllers\CalendarController::class, 'syncCarServices'])->name('admin.calendar.sync');
+});
