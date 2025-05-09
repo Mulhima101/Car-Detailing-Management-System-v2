@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CalendarEvent;
 use App\Models\CarService;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class CalendarController extends Controller
 {
@@ -15,23 +16,50 @@ class CalendarController extends Controller
     
     public function getEvents()
     {
-        $events = CalendarEvent::all();
+        // Get all calendar events
+        $events = CalendarEvent::with('carService.customer')->get()->map(function($event) {
+            return [
+                'id' => $event->id,
+                'title' => $event->title,
+                'start' => $event->start->format('Y-m-d H:i:s'),
+                'end' => $event->end ? $event->end->format('Y-m-d H:i:s') : null,
+                'color' => $event->color,
+                'description' => $event->description,
+                'allDay' => $event->all_day,
+                'extendedProps' => [
+                    'car_service_id' => $event->car_service_id,
+                    'order_id' => $event->carService->order_id ?? '',
+                    'customer_name' => $event->carService->customer->name ?? '',
+                    'status' => $event->carService->status ?? ''
+                ]
+            ];
+        });
+        
         return response()->json($events);
     }
     
     public function store(Request $request)
     {
         $request->validate([
-            'car_service_id' => 'required|exists:car_services,id',
+            'car_service_id' => 'nullable|exists:car_services,id',
             'title' => 'required|string',
             'start' => 'required|date',
-            'end' => 'required|date|after_or_equal:start',
+            'end' => 'nullable|date',
             'color' => 'nullable|string',
             'description' => 'nullable|string',
             'all_day' => 'boolean'
         ]);
         
-        $event = CalendarEvent::create($request->all());
+        $event = CalendarEvent::create([
+            'car_service_id' => $request->car_service_id,
+            'title' => $request->title,
+            'start' => $request->start,
+            'end' => $request->end,
+            'color' => $request->color,
+            'description' => $request->description,
+            'all_day' => $request->all_day ?? false
+        ]);
+        
         return response()->json($event);
     }
     
@@ -42,7 +70,7 @@ class CalendarController extends Controller
         $request->validate([
             'title' => 'string',
             'start' => 'date',
-            'end' => 'date|after_or_equal:start',
+            'end' => 'nullable|date',
             'color' => 'nullable|string',
             'description' => 'nullable|string',
             'all_day' => 'boolean'
@@ -64,23 +92,46 @@ class CalendarController extends Controller
     public function syncCarServices()
     {
         $carServices = CarService::whereDoesntHave('calendarEvent')->get();
+        $count = 0;
         
         foreach ($carServices as $service) {
-            // Estimate end time (2 hours after service time)
-            $startTime = $service->service_date;
-            $endTime = (clone $service->service_date)->addHours(2);
+            // Get appropriate color based on status
+            $color = $this->getStatusColor($service->status);
+            
+            // Use appointment date if available, otherwise fallback to created date
+            $startDate = $service->start_date ?: $service->created_at;
+            
+            // Set end time (2 hours after start time if completion date not set)
+            $endDate = $service->completion_date ?: (clone $startDate)->addHours(2);
             
             CalendarEvent::create([
                 'car_service_id' => $service->id,
-                'title' => $service->car_make . ' ' . $service->car_model . ' - ' . $service->customer->name,
-                'start' => $startTime,
-                'end' => $endTime,
-                'color' => '#FFC107', // Yellow color from AutoX branding
-                'description' => 'Services: ' . $service->services,
+                'title' => ($service->car_brand ?? 'Vehicle') . ' - ' . $service->customer->name,
+                'start' => $startDate,
+                'end' => $endDate,
+                'color' => $color,
+                'description' => 'Order ID: ' . $service->order_id . "\n" . 
+                                'Services: ' . implode(', ', $service->services),
                 'all_day' => false,
             ]);
+            
+            $count++;
         }
         
-        return redirect()->back()->with('success', 'Calendar events synchronized successfully.');
+        return redirect()->back()->with('success', $count . ' calendar events synchronized successfully.');
+    }
+    
+    private function getStatusColor($status)
+    {
+        switch ($status) {
+            case 'pending':
+                return '#ffcc00'; // Yellow
+            case 'in-progress':
+                return '#3498db'; // Blue
+            case 'completed':
+                return '#2ecc71'; // Green
+            default:
+                return '#95a5a6'; // Grey
+        }
     }
 }

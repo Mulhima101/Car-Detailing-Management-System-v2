@@ -217,6 +217,11 @@
                     <i class="fas fa-cog"></i> Settings
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.calendar') ? 'active' : '' }}" href="{{ route('admin.calendar') }}">
+                    <i class="fas fa-calendar"></i> Calendar
+                </a>
+            </li>
         </ul>
         
         <div class="logout-item">

@@ -10,16 +10,14 @@ class CreateCalendarEventsTable extends Migration
     {
         Schema::create('calendar_events', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('car_service_id');
+            $table->foreignId('car_service_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('title');
             $table->dateTime('start');
-            $table->dateTime('end');
+            $table->dateTime('end')->nullable();
             $table->string('color')->nullable();
             $table->text('description')->nullable();
             $table->boolean('all_day')->default(false);
             $table->timestamps();
-            
-            $table->foreign('car_service_id')->references('id')->on('car_services')->onDelete('cascade');
         });
     }
 
