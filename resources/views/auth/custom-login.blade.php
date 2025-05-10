@@ -91,8 +91,7 @@
 <body>
     <div class="login-container">
         <div class="brand-logo">
-            <img src="{{ asset('public/images/autox-logo.png') }}" alt="AutoX Service">
-        </div>
+    <img src="{{ asset('public/images/autox-logo.png') }}" alt="AutoX Service">        </div>
         <p class="subtitle">Management System</p>
         
         @if (session('status'))

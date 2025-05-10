@@ -191,39 +191,38 @@
         <p class="text-white-50 small">Admin Dashboard</p>
         </div>
         
-        <ul class="nav flex-column mt-3">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.customers') ? 'active' : '' }}" href="{{ route('admin.customers') }}">
-                    <i class="fas fa-users"></i> Customers
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.services') ? 'active' : '' }}" href="{{ route('admin.services') }}">
-                    <i class="fas fa-car"></i> All Services
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.completed-services') ? 'active' : '' }}" href="{{ route('admin.completed-services') }}">
-                    <i class="fas fa-check-circle"></i> Completed Services
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}" href="{{ route('admin.settings') }}">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.calendar') ? 'active' : '' }}" href="{{ route('admin.calendar') }}">
-                    <i class="fas fa-calendar"></i> Calendar
-                </a>
-            </li>
-        </ul>
-        
+    <ul class="nav flex-column mt-3">
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.customers') ? 'active' : '' }}" href="{{ route('admin.customers') }}">
+                <i class="fas fa-users"></i> Customers
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.services') ? 'active' : '' }}" href="{{ route('admin.services') }}">
+                <i class="fas fa-car"></i> All Services
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.completed-services') ? 'active' : '' }}" href="{{ route('admin.completed-services') }}">
+                <i class="fas fa-check-circle"></i> Completed Services
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.calendar') ? 'active' : '' }}" href="{{ route('admin.calendar') }}">
+                <i class="fas fa-calendar"></i> Calendar
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}" href="{{ route('admin.settings') }}">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </li>
+    </ul>
         <div class="logout-item">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -240,5 +239,6 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        @yield('scripts')
 </body>
 </html>

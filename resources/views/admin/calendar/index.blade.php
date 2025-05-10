@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('content')
-<div class="page-title">
+<div class="page-title d-flex justify-content-between align-items-center">
     <h2>Service Calendar</h2>
     
     <div>
@@ -53,6 +53,15 @@
                         <label class="form-check-label" for="completed-filter">
                             <span class="status-badge status-completed">Completed</span>
                         </label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="float-end">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="month-view">Month</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="week-view">Week</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="day-view">Day</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,6 +168,7 @@
             selectable: true,
             nowIndicator: true,
             dayMaxEvents: true,
+            
             // Event click handler
             eventClick: function(info) {
                 // Store current event
@@ -228,6 +238,19 @@
         });
         
         calendar.render();
+        
+        // View buttons
+        document.getElementById('month-view').addEventListener('click', function() {
+            calendar.changeView('dayGridMonth');
+        });
+        
+        document.getElementById('week-view').addEventListener('click', function() {
+            calendar.changeView('timeGridWeek');
+        });
+        
+        document.getElementById('day-view').addEventListener('click', function() {
+            calendar.changeView('timeGridDay');
+        });
         
         // Filters
         document.getElementById('pending-filter').addEventListener('change', function() {
@@ -485,6 +508,10 @@
     }
     .fc-daygrid-event {
         white-space: normal;
+    }
+    .btn-group .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
     }
 </style>
 @endsection
